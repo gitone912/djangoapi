@@ -1,18 +1,17 @@
-
-from functools import partial
 import io
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
+from django.views import View
 from rest_framework.parsers import JSONParser
 from .models import student
 from .serializer import serializers, studentserializer
 from rest_framework.renderers import JSONRenderer
 from django.views.decorators.csrf import csrf_exempt
-# Create your views here.
+from django.utils.decorators import method_decorator
 
-@csrf_exempt
-def studentapi(request):
-    if request.method == 'GET':
+class studentapi(View):
+    def get(self,request,*args, **kwargs):
+        
         json_data = request.body
         stream = io.BytesIO(json_data)
         pythondata = JSONParser().parse(stream)
@@ -26,8 +25,8 @@ def studentapi(request):
         serializer = studentserializer(stu, many=True)
         json_data = JSONRenderer().render(serializer.data)
         return HttpResponse(json_data, content_type='application/json')
-
-    if request.method == 'POST':
+        
+    def post(self,request,*args, **kwargs):
         json_data = request.body
         stream = io.BytesIO(json_data)
         pythondata = JSONParser().parse(stream)
@@ -38,8 +37,9 @@ def studentapi(request):
             json_data = JSONRenderer().render(res)
             return HttpResponse(json_data, content_type='application/json')
         json_data = JSONRenderer().render(serializers.errors)
+        
         return HttpResponse(json_data, content_type='application/json')
-    if request.method == 'PUT':
+    def put(self,request,*args, **kwargs):
         json_data = request.body
         stream = io.BytesIO(json_data)
         pythondata = JSONParser().parse(stream)
@@ -54,7 +54,7 @@ def studentapi(request):
         json_data = JSONRenderer().render(serializers.errors)
         return HttpResponse(json_data, content_type='application/json')
     
-    if request.method =="DELETE":
+    def delete(self,request,*args, **kwargs):
         json_data = request.body
         stream = io.BytesIO(json_data)
         pythondata = JSONParser().parse(stream)
@@ -64,3 +64,9 @@ def studentapi(request):
         res = {'msg':'data done'}
         json_data= JSONRenderer().render(res)
         return HttpResponse(json_data,content_type='application/json')
+# Create your views here.
+def index(req):
+    labels = student.objects.all()
+    print(labels)
+    chart_data={'a':labels}
+    return render(req,'index.html',chart_data)

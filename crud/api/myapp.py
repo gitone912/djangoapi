@@ -15,17 +15,17 @@ def get_data(id=None):
 
 def post_data():
     data ={
-        'name':'mona',
-        'roll':44,
+        'name':'qiqi',
+        'roll':454,
         'city':'liyue',
-        'ability':'hydro'
+        'ability':'cryo'
 
     }
     json_data = json.dumps(data)
     r = requests.post(url=URL,data = json_data)
     data = r.json()
     print(data)
-#post_data()
+post_data()
 
 def update_data():
     data ={
@@ -61,4 +61,4 @@ def delete_data():
     r = requests.delete(url=URL,data = json_data)
     data = r.json()
     print(data)
-delete_data()
+#delete_data()
